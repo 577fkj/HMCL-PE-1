@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Environment;
 import android.text.Html;
 import android.view.View;
@@ -14,6 +15,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tungsten.filepicker.Constants;
 import com.tungsten.filepicker.FileChooser;
@@ -22,11 +24,18 @@ import com.tungsten.hmclpe.R;
 import com.tungsten.hmclpe.launcher.MainActivity;
 import com.tungsten.hmclpe.launcher.dialogs.EditDownloadNameDialog;
 import com.tungsten.hmclpe.launcher.dialogs.EditDownloadUrlDialog;
+import com.tungsten.hmclpe.launcher.download.GameInstallDialog;
 import com.tungsten.hmclpe.launcher.list.install.DownloadTaskListBean;
 import com.tungsten.hmclpe.launcher.mod.ManuallyCreatedModpackException;
 import com.tungsten.hmclpe.launcher.mod.Modpack;
 import com.tungsten.hmclpe.launcher.mod.ModpackHelper;
 import com.tungsten.hmclpe.launcher.mod.UnsupportedModpackException;
+import com.tungsten.hmclpe.launcher.mod.hmcl.HMCLModpackInstallTask;
+import com.tungsten.hmclpe.launcher.mod.mcbbs.McbbsModpackLocalInstallTask;
+import com.tungsten.hmclpe.launcher.mod.mcbbs.McbbsModpackManifest;
+import com.tungsten.hmclpe.launcher.mod.modrinth.ModrinthInstallTask;
+import com.tungsten.hmclpe.launcher.mod.multimc.MultiMCModpackInstallTask;
+import com.tungsten.hmclpe.launcher.setting.SettingUtils;
 import com.tungsten.hmclpe.launcher.uis.tools.BaseUI;
 import com.tungsten.hmclpe.manifest.AppManifest;
 import com.tungsten.hmclpe.utils.animation.CustomAnimationUtils;
@@ -59,6 +68,8 @@ public class InstallPackageUI extends BaseUI implements View.OnClickListener {
 
     private String url = "";
 
+    private File packFile;
+
     private final EditDownloadUrlDialog.CallBacks editUrlCallBacks = new EditDownloadUrlDialog.CallBacks() {
         @Override
         public void onSuccess(String url) {
@@ -78,7 +89,8 @@ public class InstallPackageUI extends BaseUI implements View.OnClickListener {
     private final EditDownloadNameDialog.CallBacks downloadCallbacks = new EditDownloadNameDialog.CallBacks() {
         @Override
         public void onDownloadSuccess(String path) {
-            parseInstallPackage(new File(path), path);
+            packFile = new File(path);
+            parseInstallPackage(packFile);
         }
 
         @Override
@@ -137,6 +149,42 @@ public class InstallPackageUI extends BaseUI implements View.OnClickListener {
         }
         if (view == install) {
             // TODO: install modpack
+            if (editName.getText().toString().isEmpty()) {
+                Toast.makeText(context, context.getString(R.string.dialog_package_name_empty), Toast.LENGTH_SHORT).show();
+                return;
+            }
+            installPackage();
+        }
+    }
+
+    private void installPackage() {
+        if (modpack == null) {
+            throw new NullPointerException("modpack is null");
+        }
+        String verName = editName.getText().toString();
+        boolean exist = SettingUtils.getLocalVersionNames(activity.launcherSetting.gameFileDirectory).contains(verName);
+        if (exist) {
+            Toast.makeText(context, context.getString(R.string.install_game_ui_exist), Toast.LENGTH_SHORT).show();
+            return;
+        }
+        AsyncTask installTask = modpack.getInstallTask(packFile, verName);
+        switch (modpack.getManifest().getProvider().getName()) {
+            case "Mcbbs":
+                McbbsModpackLocalInstallTask mcbbsModpackLocalInstallTask = (McbbsModpackLocalInstallTask) installTask;
+                mcbbsModpackLocalInstallTask.execute(activity);
+                break;
+            case "MultiMC":
+                MultiMCModpackInstallTask multiMCModpackLocalInstallTask = (MultiMCModpackInstallTask) installTask;
+                multiMCModpackLocalInstallTask.execute(activity);
+                break;
+            case "Modrinth":
+                ModrinthInstallTask modrinthModpackInstallTask = (ModrinthInstallTask) installTask;
+                modrinthModpackInstallTask.execute(activity);
+                break;
+            case "HMCL":
+                HMCLModpackInstallTask hmclModpackInstallTask = (HMCLModpackInstallTask) installTask;
+                hmclModpackInstallTask.execute(activity);
+                break;
         }
     }
 
@@ -165,7 +213,8 @@ public class InstallPackageUI extends BaseUI implements View.OnClickListener {
         if (requestCode == SELECT_PACKAGE_REQUEST && resultCode == -1 && data != null) {
             final String filePath = UriUtils.getRealPathFromUri_AboveApi19(context, data.getData());
             assert filePath != null;
-            parseInstallPackage(new File(filePath), filePath);
+            packFile = new File(filePath);
+            parseInstallPackage(packFile);
         }
         if (requestCode == SELECT_SAVE_PACKAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null) {
             Uri uri = data.getData();
@@ -173,7 +222,8 @@ public class InstallPackageUI extends BaseUI implements View.OnClickListener {
         }
     }
 
-    private void parseInstallPackage(File file, String filePath) {
+    private void parseInstallPackage(File file) {
+        String filePath = file.getAbsolutePath();
         selectLayout.setVisibility(View.GONE);
         installLayout.setVisibility(View.GONE);
         progressBar.setVisibility(View.VISIBLE);

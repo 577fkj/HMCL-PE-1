@@ -83,8 +83,8 @@ public class DownloadMinecraftUI extends BaseUI implements View.OnClickListener,
     @Override
     public void onStart() {
         super.onStart();
-        CustomAnimationUtils.showViewFromLeft(downloadMinecraftUI,activity,context,false);
-        if (activity.isLoaded){
+        CustomAnimationUtils.showViewFromLeft(downloadMinecraftUI, activity, context, false);
+        if (activity.isLoaded) {
             activity.uiManager.downloadUI.startDownloadGameUI.setBackground(context.getResources().getDrawable(R.drawable.launcher_button_white));
         }
         init();
@@ -94,34 +94,34 @@ public class DownloadMinecraftUI extends BaseUI implements View.OnClickListener,
     @Override
     public void onStop() {
         super.onStop();
-        CustomAnimationUtils.hideViewToLeft(downloadMinecraftUI,activity,context,false);
-        if (activity.isLoaded){
+        CustomAnimationUtils.hideViewToLeft(downloadMinecraftUI, activity, context, false);
+        if (activity.isLoaded) {
             activity.uiManager.downloadUI.startDownloadGameUI.setBackground(context.getResources().getDrawable(R.drawable.launcher_button_parent));
         }
     }
 
-    private void init(){
+    private void init() {
         new Thread(() -> {
             loadingHandler.sendEmptyMessage(0);
             try {
                 allList = new ArrayList<>();
-                String response = NetworkUtils.doGet(NetworkUtils.toURL(DownloadUrlSource.getSubUrl(DownloadUrlSource.getSource(activity.launcherSetting.downloadUrlSource),DownloadUrlSource.VERSION_MANIFEST)));
+                String response = NetworkUtils.doGet(NetworkUtils.toURL(DownloadUrlSource.getSubUrl(DownloadUrlSource.getSource(activity.launcherSetting.downloadUrlSource), DownloadUrlSource.VERSION_MANIFEST)));
                 Gson gson = new Gson();
-                VersionManifest versionManifest = gson.fromJson(response,VersionManifest.class);
+                VersionManifest versionManifest = gson.fromJson(response, VersionManifest.class);
                 ArrayList<VersionManifest.Version> list = new ArrayList<>();
-                for (VersionManifest.Version versions : versionManifest.versions){
-                    if (checkRelease.isChecked() && versions.type.equals("release")){
+                for (VersionManifest.Version versions : versionManifest.versions) {
+                    if (checkRelease.isChecked() && versions.type.equals("release")) {
                         list.add(versions);
                     }
-                    if (checkSnapshot.isChecked() && versions.type.equals("snapshot")){
+                    if (checkSnapshot.isChecked() && versions.type.equals("snapshot")) {
                         list.add(versions);
                     }
-                    if (checkOld.isChecked() && (versions.type.equals("old_alpha") || versions.type.equals("old_beta"))){
+                    if (checkOld.isChecked() && (versions.type.equals("old_alpha") || versions.type.equals("old_beta"))) {
                         list.add(versions);
                     }
                     allList.add(versions);
                 }
-                DownloadGameListAdapter downloadGameListAdapter = new DownloadGameListAdapter(context,activity,list);
+                DownloadGameListAdapter downloadGameListAdapter = new DownloadGameListAdapter(context, activity, list);
                 activity.runOnUiThread(() -> mcList.setAdapter(downloadGameListAdapter));
             } catch (IOException e) {
                 e.printStackTrace();
@@ -130,31 +130,31 @@ public class DownloadMinecraftUI extends BaseUI implements View.OnClickListener,
         }).start();
     }
 
-    private void refresh(){
+    private void refresh() {
         ArrayList<VersionManifest.Version> list = new ArrayList<>();
-        for (VersionManifest.Version versions : allList){
-            if (checkRelease.isChecked() && versions.type.equals("release")){
+        for (VersionManifest.Version versions : allList) {
+            if (checkRelease.isChecked() && versions.type.equals("release")) {
                 list.add(versions);
             }
-            if (checkSnapshot.isChecked() && versions.type.equals("snapshot")){
+            if (checkSnapshot.isChecked() && versions.type.equals("snapshot")) {
                 list.add(versions);
             }
-            if (checkOld.isChecked() && (versions.type.equals("old_alpha") || versions.type.equals("old_beta"))){
+            if (checkOld.isChecked() && (versions.type.equals("old_alpha") || versions.type.equals("old_beta"))) {
                 list.add(versions);
             }
         }
-        DownloadGameListAdapter downloadGameListAdapter = new DownloadGameListAdapter(context,activity,list);
+        DownloadGameListAdapter downloadGameListAdapter = new DownloadGameListAdapter(context, activity, list);
         mcList.setAdapter(downloadGameListAdapter);
     }
 
     @Override
     public void onClick(View v) {
-        if (v == hintLayout){
+        if (v == hintLayout) {
             Uri uri = Uri.parse("https://github.com/577fkj/HMCL-PE");
             Intent intent = new Intent(Intent.ACTION_VIEW, uri);
             context.startActivity(intent);
         }
-        if (v == refresh){
+        if (v == refresh) {
             init();
         }
     }
@@ -171,15 +171,15 @@ public class DownloadMinecraftUI extends BaseUI implements View.OnClickListener,
     }
 
     @SuppressLint("HandlerLeak")
-    private final Handler loadingHandler = new Handler(){
+    private final Handler loadingHandler = new Handler() {
         @Override
         public void handleMessage(@NonNull Message msg) {
             super.handleMessage(msg);
-            if (msg.what == 0){
+            if (msg.what == 0) {
                 gameListLayout.setVisibility(View.GONE);
                 loadingProgress.setVisibility(View.VISIBLE);
             }
-            if (msg.what == 1){
+            if (msg.what == 1) {
                 gameListLayout.setVisibility(View.VISIBLE);
                 loadingProgress.setVisibility(View.GONE);
             }

@@ -44,20 +44,20 @@ public class McbbsModpackManifest implements ModpackManifest, Validation {
         this(MANIFEST_TYPE, 1, "", "", "", "", null, "", false, Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), new Settings(), new LaunchInfo());
     }
 
-    public McbbsModpackManifest(String str, int i, String str2, String str3, String str4, String str5, String str6, String str7, boolean z, List<Origin> list, List<Addon> list2, List<Library> list3, List<File> list4, Settings settings, LaunchInfo launchInfo) {
-        this.manifestType = str;
-        this.manifestVersion = i;
-        this.name = str2;
-        this.version = str3;
-        this.author = str4;
-        this.description = str5;
-        this.fileApi = str6;
-        this.url = str7;
-        this.forceUpdate = z;
-        this.origins = list;
-        this.addons = list2;
-        this.libraries = list3;
-        this.files = list4;
+    public McbbsModpackManifest(String manifestType, int manifestVersion, String name, String version, String author, String description, String fileApi, String url, boolean forceUpdate, List<Origin> origins, List<Addon> addons, List<Library> libraries, List<File> files, Settings settings, LaunchInfo launchInfo) {
+        this.manifestType = manifestType;
+        this.manifestVersion = manifestVersion;
+        this.name = name;
+        this.version = version;
+        this.author = author;
+        this.description = description;
+        this.fileApi = fileApi;
+        this.url = url;
+        this.forceUpdate = forceUpdate;
+        this.origins = origins;
+        this.addons = addons;
+        this.libraries = libraries;
+        this.files = files;
         this.settings = settings;
         this.launchInfo = launchInfo;
     }
@@ -389,7 +389,7 @@ public class McbbsModpackManifest implements ModpackManifest, Validation {
 
     public Modpack toModpack(Charset arg11) throws IOException {
         String version = addons.stream().filter((Addon addon) -> LibraryAnalyzer.LibraryType.MINECRAFT.getPatchId().equals(addon.id)).findAny().orElseThrow(() -> new IOException("Cannot find game version")).getVersion();
-        return new Modpack(this.name, this.author, this.version, version, this.description, arg11, this) {
+        return new Modpack(name, author, this.version, version, this.description, arg11, this) {
             @Override
             public AsyncTask getInstallTask(java.io.File arg3, String arg4) {
                 return new McbbsModpackLocalInstallTask(arg3, this, McbbsModpackManifest.this, arg4);

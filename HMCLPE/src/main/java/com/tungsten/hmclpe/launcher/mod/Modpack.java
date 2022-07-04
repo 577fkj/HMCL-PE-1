@@ -21,14 +21,14 @@ public abstract class Modpack {
         this("", null, null, null, null, null, null);
     }
 
-    public Modpack(String str, String str2, String str3, String str4, String str5, Charset charset, ModpackManifest modpackManifest) {
-        name = str;
-        author = str2;
-        version = str3;
-        gameVersion = str4;
-        description = str5;
-        encoding = charset;
-        manifest = modpackManifest;
+    public Modpack(String name, String author, String version, String gameVersion, String description, Charset encoding, ModpackManifest manifest) {
+        this.name = name;
+        this.author = author;
+        this.version = version;
+        this.gameVersion = gameVersion;
+        this.description = description;
+        this.encoding = encoding;
+        this.manifest = manifest;
     }
 
     public String getName() {

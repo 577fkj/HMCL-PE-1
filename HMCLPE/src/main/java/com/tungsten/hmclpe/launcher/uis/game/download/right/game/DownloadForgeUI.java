@@ -136,7 +136,7 @@ public class DownloadForgeUI extends BaseUI implements View.OnClickListener {
         }
     };
 
-    private static class ForgeCompareTool implements Comparator<ForgeVersion> {
+    public static class ForgeCompareTool implements Comparator<ForgeVersion> {
         @Override
         public int compare(ForgeVersion versionPri, ForgeVersion versionSec) {
             return Integer.compare(versionSec.getBuild(), versionPri.getBuild());

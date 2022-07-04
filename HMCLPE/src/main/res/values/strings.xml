@@ -1043,11 +1043,13 @@
     <string name="dialog_package_not_support_title">错误</string>
     <string name="dialog_package_description_title">整合包描述</string>
     <string name="dialog_package_description_positive">确定</string>
+    <string name="dialog_package_name_empty">名称不能为空</string>
 
     <string name="dialog_download_modpack_url_title">下载地址</string>
     <string name="dialog_download_modpack_url_positive">确定</string>
     <string name="dialog_download_modpack_url_negative">取消</string>
     <string name="dialog_download_modpack_url_hint">请输入下载地址，支持 HTTP、HTTPS。</string>
     <string name="dialog_download_modpack_url_empty">下载地址不能为空</string>
+
 
 </resources>

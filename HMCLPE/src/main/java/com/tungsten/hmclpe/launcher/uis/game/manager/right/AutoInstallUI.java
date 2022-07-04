@@ -121,8 +121,8 @@ public class AutoInstallUI extends BaseUI implements View.OnClickListener {
     @Override
     public void onStart() {
         super.onStart();
-        CustomAnimationUtils.showViewFromLeft(autoInstallUI,activity,context,false);
-        if (activity.isLoaded){
+        CustomAnimationUtils.showViewFromLeft(autoInstallUI, activity, context, false);
+        if (activity.isLoaded) {
             activity.uiManager.gameManagerUI.startAutoInstall.setBackground(context.getResources().getDrawable(R.drawable.launcher_button_white));
         }
     }
@@ -131,8 +131,8 @@ public class AutoInstallUI extends BaseUI implements View.OnClickListener {
     @Override
     public void onStop() {
         super.onStop();
-        CustomAnimationUtils.hideViewToLeft(autoInstallUI,activity,context,false);
-        if (activity.isLoaded){
+        CustomAnimationUtils.hideViewToLeft(autoInstallUI, activity, context, false);
+        if (activity.isLoaded) {
             activity.uiManager.gameManagerUI.startAutoInstall.setBackground(context.getResources().getDrawable(R.drawable.launcher_button_parent));
         }
     }
@@ -142,18 +142,18 @@ public class AutoInstallUI extends BaseUI implements View.OnClickListener {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == SELECT_INSTALLER_REQUEST_CODE && resultCode == Activity.RESULT_OK && data != null) {
             Uri uri = data.getData();
-            GameInstallLocalDialog dialog = new GameInstallLocalDialog(context,activity,versionName,gameVersion,UriUtils.getRealPathFromUri_AboveApi19(context,uri));
+            GameInstallLocalDialog dialog = new GameInstallLocalDialog(context, activity, versionName, gameVersion, UriUtils.getRealPathFromUri_AboveApi19(context, uri));
             dialog.show();
         }
     }
 
-    public void refresh(String versionName){
+    public void refresh(String versionName) {
         this.versionName = versionName;
         this.forgeVersion = null;
         this.liteLoaderVersion = null;
         this.optifineVersion = null;
         this.fabricVersion = null;
-        String gameJsonText = FileStringUtils.getStringFromFile(activity.launcherSetting.gameFileDirectory + "/versions/" + versionName +"/" + versionName + ".json");
+        String gameJsonText = FileStringUtils.getStringFromFile(activity.launcherSetting.gameFileDirectory + "/versions/" + versionName + "/" + versionName + ".json");
         Gson gson = JsonUtils.defaultGsonBuilder()
                 .registerTypeAdapter(Artifact.class, new Artifact.Serializer())
                 .registerTypeAdapter(Bits.class, new Bits.Serializer())
@@ -181,17 +181,16 @@ public class AutoInstallUI extends BaseUI implements View.OnClickListener {
                         break;
                 }
             }
-        }
-        else {
+        } else {
             gameVersion = version.getId();
         }
         refreshView();
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
-    private void refreshView(){
+    private void refreshView() {
         gameVersionText.setText(gameVersion);
-        if (forgeVersion != null || optifineVersion != null){
+        if (forgeVersion != null || optifineVersion != null) {
             forgeVersionText.setText(forgeVersion == null ? context.getString(R.string.install_game_ui_none) : forgeVersion);
             optiFineVersionText.setText(optifineVersion == null ? context.getString(R.string.install_game_ui_none) : optifineVersion);
             fabricVersionText.setText(optifineVersion != null ? context.getString(R.string.install_game_ui_optifine_not_compatible) : context.getString(R.string.install_game_ui_forge_not_compatible));
@@ -199,8 +198,7 @@ public class AutoInstallUI extends BaseUI implements View.OnClickListener {
             deleteForgeVersion.setVisibility(forgeVersion != null ? View.VISIBLE : View.GONE);
             deleteOptiFineVersion.setVisibility(optifineVersion != null ? View.VISIBLE : View.GONE);
             selectFabric.setVisibility(View.GONE);
-        }
-        else {
+        } else {
             forgeVersionText.setText(context.getString(R.string.install_game_ui_none));
             optiFineVersionText.setText(context.getString(R.string.install_game_ui_none));
             fabricVersionText.setText(context.getString(R.string.install_game_ui_none));
@@ -209,7 +207,7 @@ public class AutoInstallUI extends BaseUI implements View.OnClickListener {
             deleteOptiFineVersion.setVisibility(View.GONE);
             selectFabric.setVisibility(View.VISIBLE);
         }
-        if (fabricVersion != null){
+        if (fabricVersion != null) {
             forgeVersionText.setText(context.getString(R.string.install_game_ui_fabric_not_compatible));
             optiFineVersionText.setText(context.getString(R.string.install_game_ui_fabric_not_compatible));
             liteLoaderVersionText.setText(context.getString(R.string.install_game_ui_fabric_not_compatible));
@@ -218,15 +216,14 @@ public class AutoInstallUI extends BaseUI implements View.OnClickListener {
             selectForge.setVisibility(View.GONE);
             selectLiteLoader.setVisibility(View.GONE);
             selectOptiFine.setVisibility(View.GONE);
-        }
-        else {
-            if (forgeVersion == null){
+        } else {
+            if (forgeVersion == null) {
                 forgeVersionText.setText(context.getString(R.string.install_game_ui_none));
             }
-            if (optifineVersion == null){
+            if (optifineVersion == null) {
                 optiFineVersionText.setText(context.getString(R.string.install_game_ui_none));
             }
-            if (liteLoaderVersion == null){
+            if (liteLoaderVersion == null) {
                 liteLoaderVersionText.setText(context.getString(R.string.install_game_ui_none));
             }
             deleteFabricVersion.setVisibility(View.GONE);
@@ -234,12 +231,11 @@ public class AutoInstallUI extends BaseUI implements View.OnClickListener {
             selectLiteLoader.setVisibility(View.VISIBLE);
             selectOptiFine.setVisibility(View.VISIBLE);
         }
-        if (liteLoaderVersion != null){
+        if (liteLoaderVersion != null) {
             liteLoaderVersionText.setText(liteLoaderVersion);
             deleteLiteLoaderVersion.setVisibility(View.VISIBLE);
-        }
-        else {
-            if (fabricVersion == null){
+        } else {
+            if (fabricVersion == null) {
                 liteLoaderVersionText.setText(context.getString(R.string.install_game_ui_none));
             }
             deleteLiteLoaderVersion.setVisibility(View.GONE);
@@ -251,8 +247,9 @@ public class AutoInstallUI extends BaseUI implements View.OnClickListener {
     }
 
     public void uninstall(String id) {
-        version = PatchMerger.reMergePatch(context, version, null, id, () -> {});
-        String path = activity.launcherSetting.gameFileDirectory + "/versions/" + versionName +"/" + versionName + ".json";
+        version = PatchMerger.reMergePatch(context, version, null, id, () -> {
+        });
+        String path = activity.launcherSetting.gameFileDirectory + "/versions/" + versionName + "/" + versionName + ".json";
         Gson gson = JsonUtils.defaultGsonBuilder()
                 .registerTypeAdapter(Artifact.class, new Artifact.Serializer())
                 .registerTypeAdapter(Bits.class, new Bits.Serializer())
@@ -260,7 +257,7 @@ public class AutoInstallUI extends BaseUI implements View.OnClickListener {
                 .registerTypeAdapter(Argument.class, new Argument.Deserializer())
                 .create();
         String s = gson.toJson(version);
-        FileStringUtils.writeFile(path,s);
+        FileStringUtils.writeFile(path, s);
         refresh(versionName);
         new Thread(() -> {
             activity.uiManager.versionListUI.refreshVersionList();
@@ -269,7 +266,7 @@ public class AutoInstallUI extends BaseUI implements View.OnClickListener {
 
     @Override
     public void onClick(View view) {
-        if (view == installLocal){
+        if (view == installLocal) {
             Intent intent = new Intent(context, FileChooser.class);
             intent.putExtra(Constants.SELECTION_MODE, Constants.SELECTION_MODES.SINGLE_SELECTION.ordinal());
             intent.putExtra(Constants.ALLOWED_FILE_EXTENSIONS, "jar");
@@ -277,51 +274,51 @@ public class AutoInstallUI extends BaseUI implements View.OnClickListener {
             activity.startActivityForResult(intent, SELECT_INSTALLER_REQUEST_CODE);
         }
 
-        if (view == deleteForgeVersion){
-            if (forgeVersion != null){
+        if (view == deleteForgeVersion) {
+            if (forgeVersion != null) {
                 forgeVersion = null;
                 uninstall("forge");
             }
         }
-        if (view == deleteLiteLoaderVersion){
-            if (liteLoaderVersion != null){
+        if (view == deleteLiteLoaderVersion) {
+            if (liteLoaderVersion != null) {
                 liteLoaderVersion = null;
                 uninstall("liteloader");
             }
         }
-        if (view == deleteOptiFineVersion){
-            if (optifineVersion != null){
+        if (view == deleteOptiFineVersion) {
+            if (optifineVersion != null) {
                 optifineVersion = null;
                 uninstall("optifine");
             }
         }
-        if (view == deleteFabricVersion){
-            if (fabricVersion != null){
+        if (view == deleteFabricVersion) {
+            if (fabricVersion != null) {
                 fabricVersion = null;
                 uninstall("fabric");
             }
         }
-        if (view == selectForgeVersion && fabricVersion == null){
+        if (view == selectForgeVersion && fabricVersion == null) {
             activity.uiManager.downloadForgeUI.version = gameVersion;
             activity.uiManager.downloadForgeUI.install = true;
             activity.uiManager.switchMainUI(activity.uiManager.downloadForgeUI);
         }
-        if (view == selectLiteLoaderVersion && fabricVersion == null){
+        if (view == selectLiteLoaderVersion && fabricVersion == null) {
             activity.uiManager.downloadLiteLoaderUI.version = gameVersion;
             activity.uiManager.downloadLiteLoaderUI.install = true;
             activity.uiManager.switchMainUI(activity.uiManager.downloadLiteLoaderUI);
         }
-        if (view == selectOptiFineVersion && fabricVersion == null){
+        if (view == selectOptiFineVersion && fabricVersion == null) {
             activity.uiManager.downloadOptifineUI.version = gameVersion;
             activity.uiManager.downloadOptifineUI.install = true;
             activity.uiManager.switchMainUI(activity.uiManager.downloadOptifineUI);
         }
-        if (view == selectFabricVersion && forgeVersion == null && optifineVersion == null){
+        if (view == selectFabricVersion && forgeVersion == null && optifineVersion == null) {
             activity.uiManager.downloadFabricUI.version = gameVersion;
             activity.uiManager.downloadFabricUI.install = true;
             activity.uiManager.switchMainUI(activity.uiManager.downloadFabricUI);
         }
-        if (view == selectFabricAPIVersion && forgeVersion == null && optifineVersion == null){
+        if (view == selectFabricAPIVersion && forgeVersion == null && optifineVersion == null) {
             activity.uiManager.downloadFabricAPIUI.version = gameVersion;
             activity.uiManager.downloadFabricAPIUI.install = true;
             activity.uiManager.switchMainUI(activity.uiManager.downloadFabricAPIUI);
