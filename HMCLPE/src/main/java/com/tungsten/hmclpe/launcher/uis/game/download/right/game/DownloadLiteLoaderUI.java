@@ -120,7 +120,7 @@ public class DownloadLiteLoaderUI extends BaseUI implements View.OnClickListener
     @Override
     public void onClick(View view) {
         if (view == hintLayout){
-            Uri uri = Uri.parse("https://github.com/577fkj/HMCL-PE");
+            Uri uri = Uri.parse("https://afdian.net/@bangbang93");
             Intent intent = new Intent(Intent.ACTION_VIEW, uri);
             context.startActivity(intent);
         }

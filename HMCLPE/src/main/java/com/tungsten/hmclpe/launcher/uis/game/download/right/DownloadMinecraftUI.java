@@ -150,7 +150,7 @@ public class DownloadMinecraftUI extends BaseUI implements View.OnClickListener,
     @Override
     public void onClick(View v) {
         if (v == hintLayout){
-            Uri uri = Uri.parse("https://github.com/577fkj/HMCL-PE");
+            Uri uri = Uri.parse("https://afdian.net/@bangbang93");
             Intent intent = new Intent(Intent.ACTION_VIEW, uri);
             context.startActivity(intent);
         }
